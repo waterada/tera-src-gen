@@ -1,4 +1,4 @@
-= コメント注釈
+= TeraSrcGen
 :source-highlighter: highlightjs
 
 == 概要
