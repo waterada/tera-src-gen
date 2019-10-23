@@ -1,0 +1,9 @@
+Title: 自動生成されるファイル
+
+Data:
+  # @TEST Var: {"Var1": "aaa", "Var2": "bbb"}
+  # @TEST Var: {"Var1": "xxx", "Var2": "yyy"}
+  # ↓ここから自動生成
+  # ↑ここまで自動生成
+
+End: 終了

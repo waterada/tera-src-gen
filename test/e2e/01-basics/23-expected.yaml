@@ -1,0 +1,13 @@
+Title: 自動生成されるファイル
+
+# ↓ここから自動生成
+files:
+  - "test_file_0.py"
+  - "test_file_1.py"
+  - "test_file_2.py"
+  - "test_file_3.py"
+  - "test_file_4.py"
+  - "test_file_5.py"
+# ↑ここまで自動生成
+
+End: 終了

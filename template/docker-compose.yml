@@ -1,0 +1,8 @@
+version: '3'
+services:
+  templates:
+    image: node:10-alpine
+    command: sh -c 'npm install && npm run template'
+    working_dir: /app
+    volumes:
+      - ..:/app

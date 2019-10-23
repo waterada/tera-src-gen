@@ -1,0 +1,126 @@
+StartOfFile: 111
+
+# 特殊な文字の表現
+SpecialCharacters:
+    - $
+    - \
+
+# 改行したくないとき
+DontBreak: aaabbb
+
+# コメント(値は出力されない)
+Comment: ""
+
+# annotations.sortByLogic
+# 下記のような出現に対してソートする
+# @TEST non-api: True
+# @TEST api: /aaa/bbb POST
+# @TEST api: /aaa/bbb GET
+sortByLogic:
+  # api: "/aaa GET"
+  # special: ""
+  - fileName: test_file_5.py
+    fileBase: test_file_5
+    fileBaseCamel: TestFile5
+    fileBaseSnake: test_file_5
+    # item.outputIf('special')
+    # item.outputIf(special[0])
+    # item.outputIf(special[1])
+    # item.outputIf(special-map)
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "GHI (api[1]: GET)"
+  # api: "/aaa/bbb GET"
+  # special: ""
+  - fileName: test_file_4.py
+    fileBase: test_file_4
+    fileBaseCamel: TestFile4
+    fileBaseSnake: test_file_4
+    # item.outputIf('special')
+    # item.outputIf(special[0])
+    # item.outputIf(special[1])
+    # item.outputIf(special-map)
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "GHI (api[1]: GET)"
+  # api: "/aaa/bbb POST"
+  # special: ""
+  - fileName: test_file_3.py
+    fileBase: test_file_3
+    fileBaseCamel: TestFile3
+    fileBaseSnake: test_file_3
+    # item.outputIf('special')
+    # item.outputIf(special[0])
+    # item.outputIf(special[1])
+    # item.outputIf(special-map)
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "JKL (api[1]: POST)"
+  # api: "/aaa/bbb PUT"
+  # special: "ABC DEF"
+  - fileName: test_file_2.py
+    fileBase: test_file_2
+    fileBaseCamel: TestFile2
+    fileBaseSnake: test_file_2
+    # item.outputIf('special')
+    special: "ABC DEF"
+    # item.outputIf(special[0])
+    special-0: "ABC"
+    # item.outputIf(special[1])
+    special-1: "DEF"
+    # item.outputIf(special-map)
+    special-map:
+      First: ABC
+      Second: DEF
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "ABC DEF (api[1]: PUT)"
+  # api: "/aaa/bbb DELETE"
+  # special: ""
+  - fileName: test_file_1.py
+    fileBase: test_file_1
+    fileBaseCamel: TestFile1
+    fileBaseSnake: test_file_1
+    # item.outputIf('special')
+    # item.outputIf(special[0])
+    # item.outputIf(special[1])
+    # item.outputIf(special-map)
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "JKL (api[1]: DELETE)"
+  # api: ""
+  # special: ""
+  - fileName: test_file_0.py
+    fileBase: test_file_0
+    fileBaseCamel: TestFile0
+    fileBaseSnake: test_file_0
+    # item.outputIf('special')
+    # item.outputIf(special[0])
+    # item.outputIf(special[1])
+    # item.outputIf(special-map)
+    # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
+    special-default: "JKL (api[1]: )"
+
+# sortByKey('api[0]') ※ 0 は api もっていないので非表示
+sortByKey:
+  - test_file_5.py (api: /aaa GET)
+  - test_file_1.py (api: /aaa/bbb DELETE)
+  - test_file_2.py (api: /aaa/bbb PUT)
+  - test_file_3.py (api: /aaa/bbb POST)
+  - test_file_4.py (api: /aaa/bbb GET)
+
+# filter(item => item.has('non-api')) -- test_file_0 のみヒット
+non-filter:
+  - "test_file_0.py (non-api: True)"
+  - "test_file_1.py (non-api: )"
+  - "test_file_2.py (non-api: )"
+  - "test_file_3.py (non-api: )"
+  - "test_file_4.py (non-api: )"
+  - "test_file_5.py (non-api: )"
+filter:
+  - "test_file_0.py (non-api: True)"
+
+# outputGroupedByKey('api[0]', (path, grouped_list) => ...) -- 4, 3, 2, 1, 5 の順 (0はapi[0]がないため非表示)
+outputGroupedByKey:
+  /aaa/bbb:
+    get: "test_file_4.py (api: /aaa/bbb GET)"
+    post: "test_file_3.py (api: /aaa/bbb POST)"
+    put: "test_file_2.py (api: /aaa/bbb PUT)"
+    delete: "test_file_1.py (api: /aaa/bbb DELETE)"
+  /aaa:
+    get: "test_file_5.py (api: /aaa GET)"

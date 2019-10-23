@@ -1,0 +1,26 @@
+= コメント注釈
+:source-highlighter: highlightjs
+
+== 概要
+
+ソースコードからコメント注釈を拾い出して、別ファイルを生成するツール。
+
+
+== 実行方法
+
+ cd template
+ docker-compose run --rm template
+
+
+== 新しくテンプレートを追加する手順
+
+`template` というテンプレートを作成する場合
+
+. link:test[] ディレクトリをコピーして `template` という名前に変更
+. link:package.json[] を開いて下記のように script に `"template"` の行を追加
+
+    "scripts": {
+        "template": "ts-node template",
+        "test": "ts-node test"
+    },
+
