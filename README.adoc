@@ -1,4 +1,4 @@
-= TeraSrcGen
+= tera-src-gen
 :source-highlighter: highlightjs
 
 == 概要
@@ -14,13 +14,14 @@
 
 == 新しくテンプレートを追加する手順
 
-`template` というテンプレートを作成する場合
+`template-aa` というテンプレートを作成する場合
 
-. link:test[] ディレクトリをコピーして `template` という名前に変更
-. link:package.json[] を開いて下記のように script に `"template"` の行を追加
+. link:template[] ディレクトリをコピーして `template-aa` という名前に変更
+. link:package.json[] を開いて下記のように script に `"template-aa"` の行を追加
 
     "scripts": {
         "template": "ts-node template",
+        "template-aa": "ts-node template-aa",
         "test": "ts-node test"
     },
 
