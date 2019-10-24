@@ -5,7 +5,6 @@
   "scripts": {
     "lint": "eslint --ext .ts src/ test/",
     "lint:fix": "eslint --fix --ext .ts src/ template/ test/",
-    "template": "ts-node template",
     "test": "jest test/all.spec"
   },
   "license": "MIT",
