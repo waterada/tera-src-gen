@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as path from 'path';
 
 import Collector from './Collector/Collector';
@@ -35,28 +36,16 @@ export default class TeraSrcGen<T extends AllowKeys> {
         return fs;
     }
 
-    _readDir (targetDirList: string[]): string[] {
-        let files = [];
-        for (const dir of targetDirList) {
-            files = files.concat(
-                this.__fs()
-                    .readdirSync(this.__resolvePath(dir))
-                    .map(file => {
-                        return `${dir}/${file}`;
-                    }),
-            );
-        }
-        return files;
+    __globSync (pattern: string): typeof glob.sync {
+        return glob.sync(pattern);
     }
 
-    _filterFiles (files: string[], targetFileRegExp: RegExp): string[] {
-        return files.filter(file => {
-            return (
-                this.__fs()
-                    .statSync(file)
-                    .isFile() && path.basename(file).match(targetFileRegExp)
-            ); //絞り込み
-        });
+    _globFiles (targetGlobs: string[]): string[] {
+        let files = [];
+        for (const g of targetGlobs) {
+            files = files.concat(this.__globSync(this.__resolvePath(g)));
+        }
+        return files;
     }
 
     _collectItems (
@@ -89,15 +78,12 @@ export default class TeraSrcGen<T extends AllowKeys> {
     }
 
     collectItems (opt: {
-        targetDirList: string[];
-        targetFileRegExp: RegExp;
+        targetGlobs: string[];
         collector: Collector;
         allowKeys?: T;
     }): TeraSrcGen<T> {
-        let files = this._readDir(opt.targetDirList);
+        const files = this._globFiles(opt.targetGlobs);
         console.log('found files:', files.length);
-        files = this._filterFiles(files, opt.targetFileRegExp);
-        console.log('target files:', files.length);
         const { items, fileItems } = this._collectItems(files, opt.collector);
         console.log('annotated files:', fileItems.length);
         console.log('annotated lines:', items.length);

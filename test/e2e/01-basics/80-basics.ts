@@ -2,8 +2,7 @@ import TeraSrcGen, { CollectorPrefix } from '../../../src';
 
 const gen = new TeraSrcGen();
 gen.collectItems({
-    targetDirList: [`${__dirname}/src`],
-    targetFileRegExp: /^.*\.py$/,
+    targetGlobs: [`${__dirname}/src/*.py`],
     collector: new CollectorPrefix('# @TEST'),
 });
 import template1 = require('./11-template');

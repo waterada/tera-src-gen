@@ -1,6 +1,6 @@
 import TeraSrcGen, { FoundItem, AllowKeys, CollectorPrefix } from '../../src';
 
-const __makeItem = <T extends AllowKeys>(
+const __makeItem = <T extends AllowKeys> (
     fileName: string,
     cb: (item: FoundItem<T>) => void,
 ): FoundItem<T> => {
@@ -12,41 +12,22 @@ const __makeItem = <T extends AllowKeys>(
 describe('TeraSrcGen', () => {
     let extractor: TeraSrcGen<AllowKeys>;
     let __fs: jest.Mock;
+    let __globSync: jest.Mock;
     beforeEach(() => {
         extractor = new TeraSrcGen();
         extractor.__fs = __fs = jest.fn();
+        extractor.__globSync = __globSync = jest.fn();
     });
 
-    it('_readDir', () => {
-        __fs.mockReturnValueOnce({ readdirSync: () => ['f11', 'f12'] });
-        __fs.mockReturnValueOnce({ readdirSync: () => ['f21', 'f22'] });
-        expect(extractor._readDir(['d1', 'd2'])).toEqual([
+    it('_globFiles', () => {
+        __globSync.mockReturnValueOnce(['d1/f11', 'd1/f12']);
+        __globSync.mockReturnValueOnce(['d2/f21', 'd2/f22']);
+        expect(extractor._globFiles(['d1', 'd2'])).toEqual([
             'd1/f11',
             'd1/f12',
             'd2/f21',
             'd2/f22',
         ]);
-    });
-
-    describe('_filterFiles', () => {
-        it('非ファイルと正規表現にマッチしなかったファイルが除外される', () => {
-            __fs.mockReturnValueOnce({ statSync: () => ({ isFile: () => true }) });
-            __fs.mockReturnValueOnce({ statSync: () => ({ isFile: () => true }) });
-            __fs.mockReturnValueOnce({ statSync: () => ({ isFile: () => false }) });
-            __fs.mockReturnValueOnce({ statSync: () => ({ isFile: () => true }) });
-            expect(
-                extractor._filterFiles(
-                    ['d/f1.js', 'd/f2.py', 'd/d', 'd/f3.js'],
-                    /\.js/,
-                ),
-            ).toEqual(['d/f1.js', 'd/f3.js']);
-        });
-        it('ファイル名固定でマッチされる', () => {
-            __fs.mockReturnValue({ statSync: () => ({ isFile: () => true }) });
-            expect(extractor._filterFiles(['d/f1.js', 'd/f2.py'], /^f1\.js/)).toEqual(
-                ['d/f1.js'],
-            );
-        });
     });
 
     describe('_collectItems', () => {
@@ -87,35 +68,24 @@ const a = b;
 
     describe('collectItems', () => {
         const opt = {
-            targetDirList: ['d'],
-            targetFileRegExp: /\.js$/,
+            targetGlobs: ['d/*.js'],
             collector: new CollectorPrefix('# @TEST'),
         };
         it('注釈あり', () => {
             const ITEM1 = __makeItem('f1', item => item.set('x', 1));
-            extractor._readDir = jest.fn().mockReturnValue(['f1', 'f2', 'f3', 'f4']);
-            extractor._filterFiles = jest.fn().mockReturnValue(['f1', 'f2', 'f3']);
-            extractor._collectItems = jest
-                .fn()
-                .mockReturnValue({ items: [ITEM1], fileItems: [ITEM1] });
-            extractor.collectItems(opt);
-            expect(extractor).toMatchObject(new TeraSrcGen([ITEM1], [ITEM1]));
-            expect(extractor._readDir).toBeCalledWith(opt.targetDirList);
-            expect(extractor._filterFiles).toBeCalledWith(
-                ['f1', 'f2', 'f3', 'f4'],
-                opt.targetFileRegExp,
-            );
+            extractor._globFiles = jest.fn().mockReturnValue(['d/f1', 'd/f2', 'd/f3', 'd/f4']);
+            extractor._collectItems = jest.fn().mockReturnValue({ items: [ITEM1], fileItems: [ITEM1] });
+            const actual = extractor.collectItems(opt);
+            expect(actual).toMatchObject(new TeraSrcGen([ITEM1], [ITEM1]));
+            expect(extractor._globFiles).toBeCalledWith(opt.targetGlobs);
             expect(extractor._collectItems).toBeCalledWith(
-                ['f1', 'f2', 'f3'],
+                ['d/f1', 'd/f2', 'd/f3', 'd/f4'],
                 opt.collector,
             );
         });
         it('注釈なし', () => {
-            extractor._readDir = jest.fn().mockReturnValue([]);
-            extractor._filterFiles = jest.fn().mockReturnValue([]);
-            extractor._collectItems = jest
-                .fn()
-                .mockReturnValue({ items: [], fileItems: [] });
+            extractor._globFiles = jest.fn().mockReturnValue([]);
+            extractor._collectItems = jest.fn().mockReturnValue({ items: [], fileItems: [] });
             expect(() => extractor.collectItems(opt)).toThrow(
                 'コメント注釈が見つかりませんでした。',
             );
