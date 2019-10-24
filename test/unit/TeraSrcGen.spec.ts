@@ -1,10 +1,10 @@
 import TeraSrcGen, { FoundItem, AllowKeys, CollectorPrefix } from '../../src';
 
-const __makeItem = <T extends AllowKeys> (
+const __makeItem = (
     fileName: string,
-    cb: (item: FoundItem<T>) => void,
-): FoundItem<T> => {
-    const item = new FoundItem<T>(fileName);
+    cb: (item: FoundItem<AllowKeys>) => void,
+): FoundItem<AllowKeys> => {
+    const item = new FoundItem(fileName, { 'aaa': true });
     cb(item);
     return item;
 };
@@ -14,7 +14,7 @@ describe('TeraSrcGen', () => {
     let __fs: jest.Mock;
     let __globSync: jest.Mock;
     beforeEach(() => {
-        extractor = new TeraSrcGen();
+        extractor = new TeraSrcGen().allowKeys({ 'aaa': true });
         extractor.__fs = __fs = jest.fn();
         extractor.__globSync = __globSync = jest.fn();
     });
@@ -99,7 +99,7 @@ const a = b;
         );
         const allowKeys = {
             aaa: true,
-            bbb: item => item.get('aaa[1]'), // エイリアスを設定できる
+            bbb: item => item.get('aaa').at(1), // エイリアスを設定できる
         } as AllowKeys;
         const extractor2 = extractor.allowKeys(allowKeys);
         // expect(extractor2).toEqual(new CommentAnnotationExtractor([

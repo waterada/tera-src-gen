@@ -29,7 +29,8 @@ export default class FoundItem<T extends AllowKeys> {
         return FoundItemValue.snake2camel(this.fileBaseSnake);
     }
 
-    get(_key: keyof T | string): FoundItemValue {
+    get (_key: keyof T | string): FoundItemValue {
+        // キーが許されているか
         if (_key in this.__allowKeys) {
             const allowed = this.__allowKeys[_key];
             if (allowed === true) {
@@ -42,22 +43,33 @@ export default class FoundItem<T extends AllowKeys> {
                     return new FoundItemValue(val);
                 }
             }
+        } else {
+            throw new Error(`The key "${_key}" is not allowed. Please define using gen.allowKeys({ "${_key}": true })`);
         }
+        // キーが配列形式で指定されていたら分解
         const key = _key as string;
+        if (key.slice(-1) === ']') {
+            const matches = key.match(/^(.+)\[(\d+)]$/);
+            if (matches) {
+                const k = matches[1];
+                const i = matches[2];
+                if (k in this._data) {
+                    const split = this._data[k].split(/\s+/);
+                    if (i in split) return new FoundItemValue(split[i]);
+                }
+            }
+        }
+        // 予約語対応
         if (
             ['fileName', 'fileBase', 'fileBaseCamel', 'fileBaseSnake'].includes(key)
         ) {
             return new FoundItemValue(this[key]);
         }
-        if (key.slice(-1) === ']') {
-            const [, k, i]: string[] = key.match(/^(.+)\[(\d+)]$/) || [];
-            if (k in this._data) {
-                const split = this._data[k].split(/\s+/);
-                if (i in split) return new FoundItemValue(split[i]);
-            }
-        } else if (key in this._data) {
+        // 通常データ
+        if (key in this._data) {
             return new FoundItemValue(this._data[key]);
         }
+        // それ以外はブランクを返す
         return FoundItemValue.createBlank();
     }
 

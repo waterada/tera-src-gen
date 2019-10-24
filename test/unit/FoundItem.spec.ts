@@ -51,8 +51,18 @@ describe('FoundItem', () => {
                 'xx[3]',
                 { get: '', has: false, orDefault: 'None' },
             ],
-            ['空欄が値', { xx: '' }, 'xx', { get: '', has: true, orDefault: '' }],
-            ['キーなし', {}, 'xx', { get: '', has: false, orDefault: 'None' }],
+            [
+                '空欄が値',
+                { xx: '' },
+                'xx',
+                { get: '', has: true, orDefault: '' },
+            ],
+            [
+                'キーなし',
+                {},
+                'xx',
+                { get: '', has: false, orDefault: 'None' },
+            ],
         ])(
             '%s',
             (
@@ -60,26 +70,26 @@ describe('FoundItem', () => {
                 data: { [k: string]: string },
                 key: string,
                 expected: {
-          get: string;
-          has: boolean;
-          orDefault: string;
-        },
+                    get: string;
+                    has: boolean;
+                    orDefault: string;
+                },
             ) => {
-                const item = new FoundItem('a.xx');
+                const item = new FoundItem('a.xx', { [key]: true });
                 item._data = data;
                 expect(item.get(key).toString()).toBe(expected.get);
                 expect(item.has(key)).toBe(expected.has);
-                expect(
-                    item
-                        .get(key)
-                        .orDefault('None')
-                        .toString(),
-                ).toBe(expected.orDefault);
+                expect(item.get(key).orDefault('None').toString()).toBe(expected.orDefault);
             },
         );
 
         it('ファイル名を get でも取れる', () => {
-            const item = new FoundItem('aa_bb.xx');
+            const item = new FoundItem('aa_bb.xx', {
+                'fileName': true,
+                'fileBase': true,
+                'fileBaseSnake': true,
+                'fileBaseCamel': true,
+            });
             expect(item.get('fileName').toString()).toBe('aa_bb.xx');
             expect(item.get('fileBase').toString()).toBe('aa_bb');
             expect(item.get('fileBaseSnake').toString()).toBe('aa_bb');
@@ -88,8 +98,9 @@ describe('FoundItem', () => {
 
         it('allowKeys', () => {
             const item = new FoundItem('', {
-                aaa: true,
-                bbb: item => item.get('aaa[1]'), // エイリアスを設定できる
+                'aaa': true,
+                'aaa[1]': true,
+                'bbb': item => item.get('aaa[1]'), // エイリアスを設定できる
             });
             item.set('aaa', 'x y');
             expect(item.get('aaa').value).toBe('x y');

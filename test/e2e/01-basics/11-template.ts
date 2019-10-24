@@ -43,11 +43,11 @@ ${'' /*LOOP_NAME START*/}\
 ${item.get('special').output(v => `\
     special: "${v}"
 `)}\
-    # item.outputIf(special[0])
+    # item.outputIf(special-0)
 ${item.get('special-0').output(v => `\
     special-0: "${v}"
 `)}\
-    # item.outputIf(special[1])
+    # item.outputIf(special-1)
 ${item.get('special').at(1).output(v => `\
     special-1: "${v}"
 `)}\

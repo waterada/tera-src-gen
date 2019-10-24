@@ -24,8 +24,8 @@ sortByLogic:
     fileBaseCamel: TestFile5
     fileBaseSnake: test_file_5
     # item.outputIf('special')
-    # item.outputIf(special[0])
-    # item.outputIf(special[1])
+    # item.outputIf(special-0)
+    # item.outputIf(special-1)
     # item.outputIf(special-map)
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
     special-default: "GHI (api[1]: GET)"
@@ -36,8 +36,8 @@ sortByLogic:
     fileBaseCamel: TestFile4
     fileBaseSnake: test_file_4
     # item.outputIf('special')
-    # item.outputIf(special[0])
-    # item.outputIf(special[1])
+    # item.outputIf(special-0)
+    # item.outputIf(special-1)
     # item.outputIf(special-map)
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
     special-default: "GHI (api[1]: GET)"
@@ -48,8 +48,8 @@ sortByLogic:
     fileBaseCamel: TestFile3
     fileBaseSnake: test_file_3
     # item.outputIf('special')
-    # item.outputIf(special[0])
-    # item.outputIf(special[1])
+    # item.outputIf(special-0)
+    # item.outputIf(special-1)
     # item.outputIf(special-map)
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
     special-default: "JKL (api[1]: POST)"
@@ -61,9 +61,9 @@ sortByLogic:
     fileBaseSnake: test_file_2
     # item.outputIf('special')
     special: "ABC DEF"
-    # item.outputIf(special[0])
+    # item.outputIf(special-0)
     special-0: "ABC"
-    # item.outputIf(special[1])
+    # item.outputIf(special-1)
     special-1: "DEF"
     # item.outputIf(special-map)
     special-map:
@@ -78,8 +78,8 @@ sortByLogic:
     fileBaseCamel: TestFile1
     fileBaseSnake: test_file_1
     # item.outputIf('special')
-    # item.outputIf(special[0])
-    # item.outputIf(special[1])
+    # item.outputIf(special-0)
+    # item.outputIf(special-1)
     # item.outputIf(special-map)
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
     special-default: "JKL (api[1]: DELETE)"
@@ -90,8 +90,8 @@ sortByLogic:
     fileBaseCamel: TestFile0
     fileBaseSnake: test_file_0
     # item.outputIf('special')
-    # item.outputIf(special[0])
-    # item.outputIf(special[1])
+    # item.outputIf(special-0)
+    # item.outputIf(special-1)
     # item.outputIf(special-map)
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
     special-default: "JKL (api[1]: )"

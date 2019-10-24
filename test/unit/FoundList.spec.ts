@@ -4,7 +4,7 @@ const __makeItem = (
     fileName: string,
     cb: (item: FoundItem<AllowKeys>) => void,
 ) => {
-    const item = new FoundItem(fileName);
+    const item = new FoundItem(fileName, { 'fileName': true, 'val': true, 'val1': true, 'val2': true });
     cb(item);
     return item;
 };
