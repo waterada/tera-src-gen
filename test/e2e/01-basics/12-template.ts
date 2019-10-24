@@ -1,6 +1,6 @@
-import TeraSrcGen, { AllowKeys } from '../../../src';
+import gen from './01-collecting';
 
-export = (extractor: TeraSrcGen<AllowKeys>) => extractor.insertIntoFile(
+gen.insertIntoFile(
     `${__dirname}/output/22-target.yaml`,
     {
         from: '# ↓ここから自動生成\n',

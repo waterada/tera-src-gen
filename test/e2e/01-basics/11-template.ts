@@ -1,14 +1,7 @@
-import TeraSrcGen, { AllowKeys } from '../../../src';
+import gen from './01-collecting';
 
-export = (extractor: TeraSrcGen<AllowKeys>) => extractor.allowKeys({
-    api: true,
-    'api[0]': true,
-    'api[1]': true,
-    special: true,
-    'special-0': item => item.get('special').at(0),
-    method: item => item.get('api[0]'),
-}).outputFile(
-    `${__dirname}/output/12-target.yaml`,
+gen.outputFile(
+    `${__dirname}/output/21-target.yaml`,
     ({ fileItems }) => `\
 StartOfFile: 111
 
@@ -30,16 +23,15 @@ Comment: "${'' /* 出力されない */}"
 # @TEST api: /aaa/bbb POST
 # @TEST api: /aaa/bbb GET
 sortByLogic:
-${
-        fileItems.sortByLogic(item => {
-            if (item.has('non-api')) {
-                return `2 ${item.fileBaseSnake}`; // 末尾
-            } else {
-                const k2i = {};
-                ['GET', 'POST', 'PUT', 'DELETE'].forEach((k, i) => (k2i[k] = i + 1));
-                return `1 ${item.get('api[0]')} ${k2i[item.get('api[1]').value] || 9}`;
-            }
-        }).outputEach(item => `\
+${fileItems.sortByLogic(item => {
+        if (item.has('non-api')) {
+            return `2 ${item.fileBaseSnake}`; // 末尾
+        } else {
+            const k2i = {};
+            ['GET', 'POST', 'PUT', 'DELETE'].forEach((k, i) => (k2i[k] = i + 1));
+            return `1 ${item.get('api[0]')} ${k2i[item.get('api[1]').value] || 9}`;
+        }
+    }).outputEach(item => `\
 ${'' /*LOOP_NAME START*/}\
   # api: "${item.get('api')}"
   # special: "${item.get('special')}"
@@ -66,9 +58,7 @@ ${item.get('special').output((v, obj) => `\
       Second: ${obj.at(1)}
 `)}\
     # item.outputIf(specialがあればその値、そうでなければ GET なら GHI そうでないなら JKL)
-${item.get('special')
-            .orDefault(item.get('api[1]').value === 'GET' ? 'GHI' : 'JKL')
-            .output(v => `\
+${item.get('special').orDefault(item.get('api[1]').value === 'GET' ? 'GHI' : 'JKL').output(v => `\
     special-default: "${v} (api[1]: ${item.get('api[1]')})"
 `)}\
 ${'' /*LOOP_NAME END*/}`)}\

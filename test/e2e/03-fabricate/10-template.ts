@@ -1,15 +1,6 @@
-import TeraSrcGen, { AllowKeys } from '../../../src';
+import gen from './01-collecting';
 
-export = (extractor: TeraSrcGen<AllowKeys>) => extractor.allowKeys({
-    tableName: true,
-    name: true,
-    type: true,
-    size: true,
-    unsigned: true,
-    autoIncrement: true,
-    notNull: true,
-    comment: true,
-}).insertIntoFile(
+gen.insertIntoFile(
     `${__dirname}/output/22-target.js`,
     {
         from: '// ↓自動\n',
@@ -24,26 +15,23 @@ export = (extractor: TeraSrcGen<AllowKeys>) => extractor.allowKeys({
         return `\
     ${tableName}: __fabricate('${tableName}', async record => {
         await db.query(
-            \`INSERT INTO logs (${fields
-            .map(item => item.get('name').value)
-            .join(', ')})
+            \`INSERT INTO logs (${fields.map(item => item.get('name').value).join(', ')})
              VALUES (${fields.map(() => '?').join(', ')})\`,
             [
-${
-            fields.map(item => {
-                if (item.get('autoIncrement').value) return '';
-                if (item.get('name').value === 'constraint') return '';
-                const t = item.get('type').value;
-                let defVal = "'A'";
-                if (t === 'int') defVal = '1';
-                if (t === 'bigint') defVal = '9999';
-                return `\
+` + fields.map(item => {
+            if (item.get('autoIncrement').value) return '';
+            if (item.get('name').value === 'constraint') return '';
+            const t = item.get('type').value;
+            let defVal = "'A'";
+            if (t === 'int') defVal = '1';
+            if (t === 'bigint') defVal = '9999';
+            return `\
                 __orDefVal(record['${item.get('name')}'], ${defVal}),
 `;
-            }).join('')}\
+        }).join('') + `\
             ]
         );
     }),
 `;
-    }),
+    })
 );
