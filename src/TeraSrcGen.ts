@@ -7,18 +7,19 @@ import FoundList from './FoundList';
 import { AllowKeys } from './types';
 
 export declare type Template<T extends AllowKeys> = (args: {
-  items: FoundList<T>;
-  fileItems: FoundList<T>;
+    items: FoundList<T>;
+    fileItems: FoundList<T>;
 }) => string;
 
 export default class TeraSrcGen<T extends AllowKeys> {
-    constructor(
-    private _items: FoundItem<T>[] = [],
-    private _fileItems: FoundItem<T>[] = [],
-    private _allowKeys: T = {} as T,
-    ) {}
+    constructor (
+        private _items: FoundItem<T>[] = [],
+        private _fileItems: FoundItem<T>[] = [],
+        private _allowKeys: T = {} as T,
+    ) {
+    }
 
-    allowKeys<T2 extends T>(allowKeys: T2): TeraSrcGen<T2> {
+    allowKeys<T2 extends T> (allowKeys: T2): TeraSrcGen<T2> {
         return new TeraSrcGen(
             this._items.map(item => item.allowKeys(allowKeys)),
             this._fileItems.map(item => item.allowKeys(allowKeys)),
@@ -26,15 +27,15 @@ export default class TeraSrcGen<T extends AllowKeys> {
         );
     }
 
-    __resolvePath(pathStr: string): string {
+    __resolvePath (pathStr: string): string {
         return path.resolve(pathStr);
     }
 
-    __fs(): typeof fs {
+    __fs (): typeof fs {
         return fs;
     }
 
-    _readDir(targetDirList: string[]): string[] {
+    _readDir (targetDirList: string[]): string[] {
         let files = [];
         for (const dir of targetDirList) {
             files = files.concat(
@@ -48,7 +49,7 @@ export default class TeraSrcGen<T extends AllowKeys> {
         return files;
     }
 
-    _filterFiles(files: string[], targetFileRegExp: RegExp): string[] {
+    _filterFiles (files: string[], targetFileRegExp: RegExp): string[] {
         return files.filter(file => {
             return (
                 this.__fs()
@@ -58,13 +59,13 @@ export default class TeraSrcGen<T extends AllowKeys> {
         });
     }
 
-    _collectItems(
+    _collectItems (
         files: string[],
         collector: Collector,
     ): {
-    items: FoundItem<T>[];
-    fileItems: FoundItem<T>[];
-  } {
+        items: FoundItem<T>[];
+        fileItems: FoundItem<T>[];
+    } {
         const items: FoundItem<T>[] = [];
         const fileItems: FoundItem<T>[] = [];
         for (const file of files) {
@@ -87,12 +88,12 @@ export default class TeraSrcGen<T extends AllowKeys> {
         return { items, fileItems };
     }
 
-    collectItems(opt: {
-    targetDirList: string[];
-    targetFileRegExp: RegExp;
-    collector: Collector;
-    allowKeys?: T;
-  }): void {
+    collectItems (opt: {
+        targetDirList: string[];
+        targetFileRegExp: RegExp;
+        collector: Collector;
+        allowKeys?: T;
+    }): TeraSrcGen<T> {
         let files = this._readDir(opt.targetDirList);
         console.log('found files:', files.length);
         files = this._filterFiles(files, opt.targetFileRegExp);
@@ -106,16 +107,17 @@ export default class TeraSrcGen<T extends AllowKeys> {
         this._items = items;
         this._fileItems = fileItems;
         if (opt.allowKeys) this._allowKeys = opt.allowKeys;
+        return this;
     }
 
-    __render(template: Template<T>): string {
+    __render (template: Template<T>): string {
         return template({
             items: new FoundList(this._items),
             fileItems: new FoundList(this._fileItems),
         });
     }
 
-    outputFile(filePath: string, template: Template<T>): void {
+    outputFile (filePath: string, template: Template<T>): void {
         filePath = this.__resolvePath(filePath);
         this.__fs().writeFileSync(filePath, this.__render(template), {
             encoding: 'utf8',
@@ -123,7 +125,7 @@ export default class TeraSrcGen<T extends AllowKeys> {
         console.log('output:', filePath);
     }
 
-    insertIntoFile(
+    insertIntoFile (
         filePath: string,
         opt: { from: string; to: string },
         template: Template<T>,
@@ -141,9 +143,9 @@ export default class TeraSrcGen<T extends AllowKeys> {
                 `from(${opt.from})で指定された行がfilePath(${filePath})に見つかりません。`,
             );
         const replaced =
-      text.substring(0, idxFrom) +
-      this.__render(template) +
-      text.substring(idxTo);
+            text.substring(0, idxFrom) +
+            this.__render(template) +
+            text.substring(idxTo);
         this.__fs().writeFileSync(filePath, replaced, { encoding: 'utf8' });
         console.log('output(insertInto):', filePath);
     }
