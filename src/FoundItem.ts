@@ -5,27 +5,27 @@ import { AllowKeys } from './types';
  * コメント注釈１ファイル分のデータ
  */
 export default class FoundItem<T extends AllowKeys> {
-    constructor(
-    public fileName: string,
-    public __allowKeys: T = {} as T,
-    public _data: { [key: string]: string } = {},
+    constructor (
+        public fileName: string,
+        public __allowKeys: T = {} as T,
+        public _data: { [key: string]: string } = {},
     ) {
         this.fileName = fileName;
     }
 
-    allowKeys<T2 extends T>(allowKeys: T2): FoundItem<T2> {
+    allowKeys<T2 extends T> (allowKeys: T2): FoundItem<T2> {
         return new FoundItem(this.fileName, allowKeys, this._data);
     }
 
-    get fileBase(): string {
+    get fileBase (): string {
         return this.fileName.replace(/\.\w+$/, '');
     }
 
-    get fileBaseSnake(): string {
+    get fileBaseSnake (): string {
         return FoundItemValue.camel2snake(this.fileBase);
     }
 
-    get fileBaseCamel(): void | string {
+    get fileBaseCamel (): void | string {
         return FoundItemValue.snake2camel(this.fileBaseSnake);
     }
 
@@ -61,23 +61,23 @@ export default class FoundItem<T extends AllowKeys> {
         return FoundItemValue.createBlank();
     }
 
-    has(key: keyof T | string): boolean {
+    has (key: keyof T | string): boolean {
         return this.get(key).exists();
     }
 
-    set(key: keyof T | string, val): FoundItem<T> {
+    set (key: keyof T | string, val): FoundItem<T> {
         this._data[key as string] = val;
         return this;
     }
 
-    setAll(map: { [key: string]: string }): FoundItem<T> {
+    setAll (map: { [key: string]: string }): FoundItem<T> {
         for (const key of Object.keys(map)) {
             this._data[key] = map[key];
         }
         return this;
     }
 
-    entries(): { key: string; v: FoundItemValue }[] {
+    entries (): { key: string; v: FoundItemValue }[] {
         return Object.keys(this._data)
             .sort()
             .map(key => ({ key, v: new FoundItemValue(this._data[key]) }));

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export default class Collector {
-    extract(
+    extract (
         text: string,
         appender: (oneFound: { [key: string]: string }) => void,
     ): void {

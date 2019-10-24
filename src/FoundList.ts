@@ -6,20 +6,21 @@ import { AllowKeys } from './types';
  * コメント注釈全ファイル文のデータ
  */
 export default class FoundList<T extends AllowKeys> {
-    constructor(public list: FoundItem<T>[] = []) {}
+    constructor (public list: FoundItem<T>[] = []) {
+    }
 
-    push(v): void {
+    push (v): void {
         this.list.push(v);
     }
 
-    filter(cb: (item: FoundItem<T>) => boolean): FoundList<T> {
+    filter (cb: (item: FoundItem<T>) => boolean): FoundList<T> {
         return new FoundList(this.list.filter(cb));
     }
 
     /**
-   * @param {function} [logic]
-   */
-    sortByLogic(logic: (item: FoundItem<T>) => string): FoundList<T> {
+     * @param {function} [logic]
+     */
+    sortByLogic (logic: (item: FoundItem<T>) => string): FoundList<T> {
         return new FoundList(
             [...this.list].sort((aItem, bItem) => {
                 const a = logic(aItem);
@@ -32,10 +33,10 @@ export default class FoundList<T extends AllowKeys> {
     }
 
     /**
-   * @param key
-   * @param rewriteVal - 指定した場合は取得した値を書き換えてソートの基準にする
-   */
-    sortByKey(
+     * @param key
+     * @param rewriteVal - 指定した場合は取得した値を書き換えてソートの基準にする
+     */
+    sortByKey (
         key: string,
         rewriteVal: (v: string) => string = null,
     ): FoundList<T> {
@@ -47,7 +48,7 @@ export default class FoundList<T extends AllowKeys> {
         });
     }
 
-    sortByOrders(key: string, orders: string[]): FoundList<T> {
+    sortByOrders (key: string, orders: string[]): FoundList<T> {
         const k2i = {};
         orders.forEach((k, i) => (k2i[k] = i));
         return this.sortByKey(key, v => {
@@ -55,7 +56,7 @@ export default class FoundList<T extends AllowKeys> {
         });
     }
 
-    outputGroupedByKey(
+    outputGroupedByKey (
         key: keyof T | string,
         output: (key: string, itemList: FoundList<T>) => string,
     ): string {
@@ -75,14 +76,14 @@ export default class FoundList<T extends AllowKeys> {
         return groupedKey.map(key => output(key, groupedValues[key])).join('');
     }
 
-    outputEach(
+    outputEach (
         output: (item: FoundItem<T>) => string,
         opt: { delimiter?: string } = {},
     ): string {
         return this.list.map(item => output(item)).join(opt.delimiter || '');
     }
 
-    outputEachEntry(
+    outputEachEntry (
         output: (item: { key: string; v: FoundItemValue }) => string,
     ): string {
         const contents: string[] = [];

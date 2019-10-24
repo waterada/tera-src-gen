@@ -1,11 +1,11 @@
 import Collector from './Collector';
 
 export default class CollectorPrefix extends Collector {
-    constructor(private __prefix: string) {
+    constructor (private __prefix: string) {
         super();
     }
 
-    extract(
+    extract (
         text: string,
         appender: (oneFound: { [key: string]: string }) => void,
     ): void {
