@@ -9,7 +9,7 @@ export default class FoundList<T extends AllowKeys> {
     constructor (public list: FoundItem<T>[] = []) {
     }
 
-    push (v): void {
+    push (v: FoundItem<T>): void {
         this.list.push(v);
     }
 
@@ -20,7 +20,7 @@ export default class FoundList<T extends AllowKeys> {
     /**
      * @param {function} [logic]
      */
-    sortByLogic (logic: (item: FoundItem<T>) => string): FoundList<T> {
+    sortByLogic (logic: (item: FoundItem<T>) => string | number): FoundList<T> {
         return new FoundList(
             [...this.list].sort((aItem, bItem) => {
                 const a = logic(aItem);
@@ -38,9 +38,8 @@ export default class FoundList<T extends AllowKeys> {
      */
     sortByKey (
         key: string,
-        rewriteVal: (v: string) => string = null,
+        rewriteVal: (v: string) => string | number = v => v,
     ): FoundList<T> {
-        if (!rewriteVal) rewriteVal = (v: string): string => v;
         return this.filter(item => {
             return item.has(key);
         }).sortByLogic(item => {
@@ -49,7 +48,7 @@ export default class FoundList<T extends AllowKeys> {
     }
 
     sortByOrders (key: string, orders: string[]): FoundList<T> {
-        const k2i = {};
+        const k2i: { [k: string]: number } = {};
         orders.forEach((k, i) => (k2i[k] = i));
         return this.sortByKey(key, v => {
             return v in k2i ? k2i[v] : orders.length;

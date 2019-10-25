@@ -36,12 +36,12 @@ export default class TeraSrcGen<T extends AllowKeys> {
         return fs;
     }
 
-    __globSync (pattern: string): typeof glob.sync {
+    __globSync (pattern: string): string[] {
         return glob.sync(pattern);
     }
 
     _globFiles (targetGlobs: string[]): string[] {
-        let files = [];
+        let files: string[] = [];
         for (const g of targetGlobs) {
             files = files.concat(this.__globSync(this.__resolvePath(g)));
         }

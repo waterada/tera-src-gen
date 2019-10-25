@@ -1,14 +1,17 @@
 {
   "name": "tera-src-gen",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "The source code or document generator which collect information from other files, then output new files or insert into existing files.",
   "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "lint": "eslint --ext .ts src/ test/",
     "lint:fix": "eslint --fix --ext .ts src/ template/ test/",
     "test": "jest test/all.spec"
   },
   "license": "MIT",
   "dependencies": {
+    "@types/glob": "^7.1.1",
     "@types/node": "^12.7.12",
     "glob": "^7.1.5",
     "ts-node": "^8.4.1",
@@ -22,7 +25,10 @@
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0"
   },
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "directories": {
     "test": "test"
   },

@@ -25,7 +25,7 @@ export default class FoundItem<T extends AllowKeys> {
         return FoundItemValue.camel2snake(this.fileBase);
     }
 
-    get fileBaseCamel (): void | string {
+    get fileBaseCamel (): string {
         return FoundItemValue.snake2camel(this.fileBaseSnake);
     }
 
@@ -36,7 +36,7 @@ export default class FoundItem<T extends AllowKeys> {
             if (allowed === true) {
                 // 何もしない（補完のためのみ）
             } else {
-                const val = (allowed as Function)(this);
+                const val = (allowed as ((item: FoundItem<T>) => (FoundItemValue | string)))(this);
                 if (val instanceof FoundItemValue) {
                     return val;
                 } else {
@@ -52,7 +52,7 @@ export default class FoundItem<T extends AllowKeys> {
             const matches = key.match(/^(.+)\[(\d+)]$/);
             if (matches) {
                 const k = matches[1];
-                const i = matches[2];
+                const i = parseInt(matches[2]);
                 if (k in this._data) {
                     const split = this._data[k].split(/\s+/);
                     if (i in split) return new FoundItemValue(split[i]);
@@ -60,11 +60,10 @@ export default class FoundItem<T extends AllowKeys> {
             }
         }
         // 予約語対応
-        if (
-            ['fileName', 'fileBase', 'fileBaseCamel', 'fileBaseSnake'].includes(key)
-        ) {
-            return new FoundItemValue(this[key]);
-        }
+        if (key === 'fileName') return new FoundItemValue(this.fileName);
+        if (key === 'fileBase') return new FoundItemValue(this.fileBase);
+        if (key === 'fileBaseCamel') return new FoundItemValue(this.fileBaseCamel);
+        if (key === 'fileBaseSnake') return new FoundItemValue(this.fileBaseSnake);
         // 通常データ
         if (key in this._data) {
             return new FoundItemValue(this._data[key]);
@@ -77,7 +76,7 @@ export default class FoundItem<T extends AllowKeys> {
         return this.get(key).exists();
     }
 
-    set (key: keyof T | string, val): FoundItem<T> {
+    set (key: keyof T | string, val: string): FoundItem<T> {
         this._data[key as string] = val;
         return this;
     }

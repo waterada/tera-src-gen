@@ -44,12 +44,12 @@ export default class FoundItemValue {
         return new FoundItemValue('', false);
     }
 
-    static snake2camel (str): void | string {
-        str = str.replace(/(?:^|_)([a-z0-9])/g, (__, s) => s.toUpperCase());
-        return str.replace(/_/g, '', str);
+    static snake2camel (str: string): string {
+        str = str.replace(/(?:^|_)([a-z0-9])/g, (__, s: string) => s.toUpperCase());
+        return str.replace(/_/g, '');
     }
 
-    static camel2snake (str): string {
+    static camel2snake (str: string): string {
         str = str.replace(/(.)([A-Z][a-z]+)/g, '$1_$2');
         return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
     }
