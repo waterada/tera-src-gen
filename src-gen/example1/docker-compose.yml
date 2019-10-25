@@ -1,0 +1,12 @@
+version: '3'
+services:
+  gen:
+    image: node:10-alpine
+    command: sh -c 'npm install && npx ts-node template/templates/all.ts'
+    working_dir: /app
+    volumes:
+      - .:/app/template
+      - ../node_modules:/app/node_modules
+      - ../package.json:/app/package.json
+      - ../package-lock.json:/app/package-lock.json
+      - ../../test/e2e/01-basics/src:/targets
