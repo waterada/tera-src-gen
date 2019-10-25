@@ -1,6 +1,6 @@
 {
   "name": "tera-src-gen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The source code or document generator which collect information from other files, then output new files or insert into existing files.",
   "scripts": {
     "build": "tsc",
