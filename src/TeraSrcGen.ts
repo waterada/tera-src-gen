@@ -88,7 +88,7 @@ export default class TeraSrcGen<T extends AllowKeys> {
         console.log('annotated files:', fileItems.length);
         console.log('annotated lines:', items.length);
         if (items.length === 0) {
-            throw new Error('コメント注釈が見つかりませんでした。');
+            console.warn('[tera-src-gen] WARN: Not found items. targets: ' + opt.targetGlobs.join(', '));
         }
         this._items = items;
         this._fileItems = fileItems;
